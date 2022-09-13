@@ -11,4 +11,10 @@ abstract class GroupDao {
 
   @insert
   Future<int> addGroup(Group group);
+
+  @update
+  Future<int> updateGroup(Group group);
+
+  @delete
+  Future<int> deleteGroup(Group group);
 }
