@@ -1,4 +1,4 @@
-package com.example.twodo
+package com.afzaalahmadzeeshan.android.twodo
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -7,7 +7,7 @@ class CreateNewBottomsheetContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 220,
+      height: 235,
       child: ListView(
         children: [
           const Padding(
