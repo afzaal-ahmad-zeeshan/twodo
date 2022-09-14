@@ -9,8 +9,9 @@ class Task {
   late String title;
   late bool done;
   late String doBefore; // DateTime
-  late int sequenceOrder;
   late bool favorite;
+
+  late int sequenceOrder;
 
   late String when; // DateTime
   late int todoId;

@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:twodo/pages/about_page.dart';
 import 'package:twodo/pages/settings_page.dart';
-import 'package:url_launcher/url_launcher_string.dart';
+import 'package:twodo/widgets/appbar_actions.dart';
+import 'package:twodo/widgets/collections_view.dart';
+import 'package:twodo/widgets/create_new_bottomsheet.dart';
+import 'package:twodo/widgets/groups_view.dart';
+import 'package:twodo/widgets/upnext_view.dart';
 
 void main() {
   runApp(const MyApp());
@@ -16,16 +20,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'twodo',
       theme: ThemeData(
+        useMaterial3: true,
         primarySwatch: Colors.purple,
       ),
-      home: const MyHomePage(title: 'twodo'),
+      home: MyHomePage(title: 'twodo'),
       debugShowCheckedModeBanner: false,
     );
   }
 }
 
+enum ActivePage {
+  upnext,
+  groups,
+  collections,
+}
+
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -34,61 +45,36 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  // put website link here.
-  String url = "";
+  ActivePage page = ActivePage.upnext;
 
   void handleAddBtn() {
-    setState(() {
-      _counter++;
-    });
+    // show the bottom sheet
+    // Scaffold.of(context).showBottomSheet(
+    //     (context) => BottomSheet(onClosing: onClosing, builder: builder));
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return CreateNewBottomsheetContent();
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    // find child
+    var child = page == ActivePage.upnext
+        ? UpNextView()
+        : page == ActivePage.groups
+            ? GroupsView()
+            :
+            /* page == ActivePage.collections ? */
+            CollectionsView();
+
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text('twodo - ${page.toString().split(".")[1]}'),
         actions: [
-          PopupMenuButton(
-            itemBuilder: (context) {
-              return [
-                PopupMenuItem<int>(
-                  value: 0,
-                  child: const Text("Login"),
-                  onTap: () {
-                    // use Google Sign In.
-                  },
-                ),
-                PopupMenuItem<int>(
-                  value: 1,
-                  child: const Text("Learn more"),
-                  onTap: () async {
-                    if (url.isNotEmpty && await canLaunchUrlString(url)) {
-                      launchUrlString(url);
-                    } else {
-                      // remove the button, or hide it.
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            "Whoops, maybe there is nothing more to learn. 😉",
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                ),
-              ];
-            },
-            onSelected: (value) {
-              if (value == 0) {
-                debugPrint("My account menu is selected.");
-              } else if (value == 1) {
-                debugPrint("Settings menu is selected.");
-              }
-            },
-          ),
+          AppbarActions(),
         ],
       ),
       drawer: Drawer(
@@ -119,6 +105,9 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('Up next'),
               onTap: () {
                 // Load the next task card
+                setState(() {
+                  page = ActivePage.upnext;
+                });
                 Navigator.pop(context);
               },
             ),
@@ -129,6 +118,9 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('My groups'),
               onTap: () {
                 // Load groups
+                setState(() {
+                  page = ActivePage.groups;
+                });
                 Navigator.pop(context);
               },
             ),
@@ -139,6 +131,9 @@ class _MyHomePageState extends State<MyHomePage> {
               title: const Text('My collections'),
               onTap: () {
                 // Show my collections
+                setState(() {
+                  page = ActivePage.collections;
+                });
                 Navigator.pop(context);
               },
             ),
@@ -183,15 +178,12 @@ class _MyHomePageState extends State<MyHomePage> {
       ),
       body: Center(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: page == ActivePage.upnext
+              ? MainAxisAlignment.center
+              : MainAxisAlignment.start,
+          mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headline4,
-            ),
+            child,
           ],
         ),
       ),

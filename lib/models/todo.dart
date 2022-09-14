@@ -11,6 +11,7 @@ class Todo {
   late String when; // DateTime
   late String groupId;
   late bool favorite;
+  late int sequenceOrder;
 
   late bool privateCollection;
 

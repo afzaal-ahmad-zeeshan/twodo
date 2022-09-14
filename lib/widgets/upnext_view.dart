@@ -8,6 +8,8 @@ class UpNextView extends StatefulWidget {
 class _UpNextViewState extends State<UpNextView> {
   @override
   Widget build(BuildContext context) {
-    return Card();
+    return const Card(
+      child: Text("Up next!"),
+    );
   }
 }

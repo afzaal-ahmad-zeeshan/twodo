@@ -10,6 +10,7 @@ class Group {
 
   late String when; // DateTime
   late bool favorite;
+  late int sequenceOrder;
 
   // database structure
   late String owner;
