@@ -1,7 +1,7 @@
 import 'package:floor/floor.dart';
 
 @Entity(tableName: "users")
-class User {
+class AppUser {
   @primaryKey
   late int id;
 

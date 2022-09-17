@@ -11,11 +11,11 @@ abstract class UserDao {
   Future<Task?> findUserById(int id);
 
   @insert
-  Future<int> addUser(User user);
+  Future<int> addUser(AppUser user);
 
   @update
-  Future<int> updateUser(User user);
+  Future<int> updateUser(AppUser user);
 
   @delete
-  Future<int> deleteUser(User user);
+  Future<int> deleteUser(AppUser user);
 }

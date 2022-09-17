@@ -387,7 +387,7 @@ class _$UserDao extends UserDao {
         _userInsertionAdapter = InsertionAdapter(
             database,
             'users',
-            (User item) => <String, Object?>{
+            (AppUser item) => <String, Object?>{
                   'id': item.id,
                   'email': item.email,
                   'userId': item.userId,
@@ -398,7 +398,7 @@ class _$UserDao extends UserDao {
             database,
             'users',
             ['id'],
-            (User item) => <String, Object?>{
+            (AppUser item) => <String, Object?>{
                   'id': item.id,
                   'email': item.email,
                   'userId': item.userId,
@@ -409,7 +409,7 @@ class _$UserDao extends UserDao {
             database,
             'users',
             ['id'],
-            (User item) => <String, Object?>{
+            (AppUser item) => <String, Object?>{
                   'id': item.id,
                   'email': item.email,
                   'userId': item.userId,
@@ -423,11 +423,11 @@ class _$UserDao extends UserDao {
 
   final QueryAdapter _queryAdapter;
 
-  final InsertionAdapter<User> _userInsertionAdapter;
+  final InsertionAdapter<AppUser> _userInsertionAdapter;
 
-  final UpdateAdapter<User> _userUpdateAdapter;
+  final UpdateAdapter<AppUser> _userUpdateAdapter;
 
-  final DeletionAdapter<User> _userDeletionAdapter;
+  final DeletionAdapter<AppUser> _userDeletionAdapter;
 
   @override
   Future<List<Task>> getProfiles() async {
@@ -442,19 +442,19 @@ class _$UserDao extends UserDao {
   }
 
   @override
-  Future<int> addUser(User user) {
+  Future<int> addUser(AppUser user) {
     return _userInsertionAdapter.insertAndReturnId(
         user, OnConflictStrategy.abort);
   }
 
   @override
-  Future<int> updateUser(User user) {
+  Future<int> updateUser(AppUser user) {
     return _userUpdateAdapter.updateAndReturnChangedRows(
         user, OnConflictStrategy.abort);
   }
 
   @override
-  Future<int> deleteUser(User user) {
+  Future<int> deleteUser(AppUser user) {
     return _userDeletionAdapter.deleteAndReturnChangedRows(user);
   }
 }

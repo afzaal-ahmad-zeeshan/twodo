@@ -1,4 +1,7 @@
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:twodo/models/user.dart';
 import 'package:twodo/pages/about_page.dart';
 import 'package:twodo/pages/settings_page.dart';
 import 'package:twodo/widgets/appbar_actions.dart';
@@ -7,7 +10,12 @@ import 'package:twodo/widgets/create_new_bottomsheet.dart';
 import 'package:twodo/widgets/groups_view.dart';
 import 'package:twodo/widgets/upnext_view.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
+  // Ideal time to initialize
+  // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
   runApp(const MyApp());
 }
 
@@ -23,7 +31,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         primarySwatch: Colors.purple,
       ),
-      home: MyHomePage(title: 'twodo'),
+      home: const MyHomePage(title: 'twodo'),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -36,7 +44,7 @@ enum ActivePage {
 }
 
 class MyHomePage extends StatefulWidget {
-  MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key, required this.title});
 
   final String title;
 
@@ -46,11 +54,10 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   ActivePage page = ActivePage.upnext;
+  AppUser user = AppUser();
 
   void handleAddBtn() {
     // show the bottom sheet
-    // Scaffold.of(context).showBottomSheet(
-    //     (context) => BottomSheet(onClosing: onClosing, builder: builder));
     showModalBottomSheet(
       context: context,
       builder: (BuildContext context) {
@@ -69,6 +76,8 @@ class _MyHomePageState extends State<MyHomePage> {
             :
             /* page == ActivePage.collections ? */
             CollectionsView();
+
+    FirebaseAuth.instance.userChanges().listen((User? user) {});
 
     return Scaffold(
       appBar: AppBar(

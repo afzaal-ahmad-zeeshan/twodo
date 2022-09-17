@@ -21,7 +21,7 @@ part 'database.g.dart'; // the generated code will be there
     Group,
     Task,
     Todo,
-    User,
+    AppUser,
   ],
 )
 abstract class AppDatabase extends FloorDatabase {
