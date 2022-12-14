@@ -16,13 +16,9 @@ class _LoginPageState extends State<LoginPage> {
 
   Future<void> authChanges() async {
     auth.authStateChanges().listen((User? user) {
-      if (user == null) {
+      if (mounted) {
         setState(() {
-          loggedIn = false;
-        });
-      } else {
-        setState(() {
-          loggedIn = true;
+          loggedIn = user != null;
         });
       }
     });
@@ -75,9 +71,6 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                'Loading...',
-              ),
               SignInButton(
                 Buttons.Google,
                 onPressed: () {
@@ -87,13 +80,6 @@ class _LoginPageState extends State<LoginPage> {
               ),
             ],
           ),
-        ),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () {
-            auth.signOut();
-          },
-          tooltip: 'Logout',
-          child: const Icon(Icons.logout),
         ),
       );
     } else {
@@ -106,11 +92,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              const Text(
-                'The user is logged in.',
-              ),
               Text(
-                auth.currentUser?.email?.toString() ?? "Null",
+                'You are logged in as ${auth.currentUser?.email}.',
               ),
             ],
           ),

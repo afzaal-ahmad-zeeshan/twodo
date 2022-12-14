@@ -16,7 +16,7 @@ enum MediaType {
 @Entity(tableName: "media")
 class Media {
   @primaryKey
-  late int id;
+  late String id;
 
   late String filename;
   late int filetype;
@@ -24,4 +24,12 @@ class Media {
   // navigation
   late int mediaParentType;
   late int parentId;
+
+  Media(
+    this.id,
+    this.filename,
+    this.filetype,
+    this.mediaParentType,
+    this.parentId,
+  );
 }

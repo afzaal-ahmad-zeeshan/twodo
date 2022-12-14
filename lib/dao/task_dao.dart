@@ -7,10 +7,10 @@ abstract class TaskDao {
   Future<List<Task>> getAllTasks();
 
   @Query('SELECT * FROM tasks WHERE groupId = :id')
-  Future<List<Task>?> findTasksByGroupId(int id);
+  Future<List<Task>?> findTasksByGroupId(String id);
 
   @Query('SELECT * FROM tasks WHERE id = :id')
-  Future<Task?> findTasksByTaskId(int id);
+  Future<Task?> findTasksByTaskId(String id);
 
   @insert
   Future<int> addTask(Task task);

@@ -1,8 +1,12 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:twodo/models/user.dart';
 import 'package:twodo/pages/about_page.dart';
+import 'package:twodo/pages/login_page.dart';
 import 'package:twodo/pages/settings_page.dart';
 import 'package:twodo/widgets/appbar_actions.dart';
 import 'package:twodo/widgets/collections_view.dart';
@@ -12,7 +16,10 @@ import 'package:twodo/widgets/upnext_view.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+
+  if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || kIsWeb) {
+    await Firebase.initializeApp();
+  }
 
   // Ideal time to initialize
   // await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
@@ -20,6 +27,7 @@ Future<void> main() async {
 }
 
 class MyApp extends StatelessWidget {
+  static const String dbName = "twodo.app";
   const MyApp({super.key});
 
   // This widget is the root of your application.
@@ -56,6 +64,15 @@ class _MyHomePageState extends State<MyHomePage> {
   ActivePage page = ActivePage.upnext;
   AppUser user = AppUser();
 
+  // Navigation
+  int pageIndex = 0;
+
+  void onPageChanged(int index) {
+    setState(() {
+      page = ActivePage.values[index];
+    });
+  }
+
   void handleAddBtn() {
     // show the bottom sheet
     showModalBottomSheet(
@@ -83,107 +100,70 @@ class _MyHomePageState extends State<MyHomePage> {
       appBar: AppBar(
         title: Text('twodo - ${page.toString().split(".")[1]}'),
         actions: [
+          IconButton(
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute<void>(
+                  builder: (BuildContext context) => LoginPage(),
+                ),
+              );
+              setState(() {});
+            },
+            tooltip: "Account",
+            icon: Icon(
+              Icons.account_circle_rounded,
+              color: FirebaseAuth.instance.currentUser == null
+                  ? Colors.black
+                  : Colors.purple,
+            ),
+          ),
           AppbarActions(),
         ],
       ),
-      drawer: Drawer(
-        child: ListView(
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(
-                color: Colors.purple,
-                image: DecorationImage(
-                  image: AssetImage("assets/images/planning.jpg"),
-                  fit: BoxFit.fill,
-                ),
-              ),
-              child: Align(
-                alignment: Alignment.bottomLeft,
-                child: Text(
-                  '# todos for two',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.navigate_next,
-              ),
-              title: const Text('Up next'),
-              onTap: () {
-                // Load the next task card
-                setState(() {
-                  page = ActivePage.upnext;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.group,
-              ),
-              title: const Text('My groups'),
-              onTap: () {
-                // Load groups
-                setState(() {
-                  page = ActivePage.groups;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.collections_bookmark,
-              ),
-              title: const Text('My collections'),
-              onTap: () {
-                // Show my collections
-                setState(() {
-                  page = ActivePage.collections;
-                });
-                Navigator.pop(context);
-              },
-            ),
-            const Divider(
-              color: Colors.black,
-              thickness: 0.25,
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.settings,
-              ),
-              title: const Text('Settings'),
-              onTap: () async {
-                // Go to settings page
-                Navigator.pop(context);
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) => SettingsPage(),
-                  ),
-                );
-              },
-            ),
-            ListTile(
-              leading: const Icon(
-                Icons.info,
-              ),
-              title: const Text('About'),
-              onTap: () async {
-                // Open the about page
-                Navigator.pop(context);
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute<void>(
-                    builder: (BuildContext context) => AboutPage(),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   items: const <BottomNavigationBarItem>[
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.navigate_next),
+      //       label: 'Up next',
+      //       tooltip: "Upcoming items to wrap up",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.group),
+      //       label: 'Groups',
+      //       tooltip: "My groups with my friends",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Icon(Icons.collections_bookmark),
+      //       label: 'Collections',
+      //       tooltip: "The collections that I own",
+      //     ),
+      //   ],
+      //   currentIndex: page.index,
+      //   selectedItemColor: Colors.purple,
+      //   onTap: onPageChanged,
+      // ),
+      bottomNavigationBar: NavigationBar(
+        onDestinationSelected: onPageChanged,
+        selectedIndex: page.index,
+        destinations: const <Widget>[
+          NavigationDestination(
+            icon: Icon(Icons.navigate_next),
+            label: 'Up next',
+            tooltip: "Upcoming items to wrap up",
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.group),
+            label: 'Groups',
+            tooltip: "My groups with my friends",
+          ),
+          NavigationDestination(
+            // selectedIcon: Icon(Icons.collections_bookmark),
+            icon: Icon(Icons.collections_bookmark),
+            label: 'Collections',
+            tooltip: "The collections that I own",
+          ),
+        ],
       ),
       body: Center(
         child: Column(

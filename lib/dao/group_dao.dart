@@ -7,7 +7,7 @@ abstract class GroupDao {
   Future<List<Group>> getAllGroups();
 
   @Query('SELECT * FROM groups WHERE id = :id')
-  Future<Group?> findGroupById(int id);
+  Future<Group?> findGroupById(String id);
 
   @insert
   Future<int> addGroup(Group group);

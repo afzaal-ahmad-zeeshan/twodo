@@ -4,7 +4,7 @@ import 'package:floor/floor.dart';
 @Entity(tableName: "tasks")
 class Task {
   @primaryKey
-  late int id;
+  late String id;
 
   late String title;
   late bool done;
@@ -15,4 +15,15 @@ class Task {
 
   late String when; // DateTime
   late int todoId;
+
+  Task(
+    this.id,
+    this.title,
+    this.done,
+    this.doBefore,
+    this.favorite,
+    this.sequenceOrder,
+    this.when,
+    this.todoId,
+  );
 }

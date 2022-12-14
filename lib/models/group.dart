@@ -4,7 +4,7 @@ import 'package:floor/floor.dart';
 @Entity(tableName: "groups")
 class Group {
   @primaryKey
-  late int id;
+  late String id;
 
   late String title;
 
@@ -14,5 +14,15 @@ class Group {
 
   // database structure
   late String owner;
-  late String userId;
+  late String collaborator;
+
+  Group(
+    this.id,
+    this.title,
+    this.when,
+    this.favorite,
+    this.sequenceOrder,
+    this.owner,
+    this.collaborator,
+  );
 }

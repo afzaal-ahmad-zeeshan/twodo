@@ -7,19 +7,19 @@ abstract class MediaDao {
   Future<List<Media>> getMedia();
 
   @Query('SELECT * FROM media WHERE id = :id')
-  Future<Media?> findMediaById(int id);
+  Future<Media?> findMediaById(String id);
 
   @Query('SELECT * FROM media WHERE parentId = :id AND mediaParentType = 1')
-  Future<Media?> findMediaForCollection(int id);
+  Future<Media?> findMediaForCollection(String id);
 
   @Query('SELECT * FROM media WHERE parentId = :id AND mediaParentType = 0')
-  Future<Media?> findMediaForGroup(int id);
+  Future<Media?> findMediaForGroup(String id);
 
   @Query('SELECT * FROM media WHERE parentId = :id AND mediaParentType = 2')
-  Future<Media?> findMediaForTask(int id);
+  Future<Media?> findMediaForTask(String id);
 
   @Query('SELECT * FROM media WHERE parentId = :id AND mediaParentType = 3')
-  Future<Media?> findMediaForUser(int id);
+  Future<Media?> findMediaForUser(String id);
 
   @insert
   Future<int> addMedia(Media media);

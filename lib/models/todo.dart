@@ -4,7 +4,7 @@ import 'package:floor/floor.dart';
 @Entity(tableName: "todos")
 class Todo {
   @primaryKey
-  late int id;
+  late String id;
 
   late String title;
 
@@ -18,4 +18,16 @@ class Todo {
   // style
   late String colorAccent;
   late bool deleteWhenDone;
+
+  Todo(
+    this.id,
+    this.title,
+    this.when,
+    this.groupId,
+    this.favorite,
+    this.sequenceOrder,
+    this.privateCollection,
+    this.colorAccent,
+    this.deleteWhenDone,
+  );
 }

@@ -8,7 +8,7 @@ abstract class UserDao {
   Future<List<Task>> getProfiles();
 
   @Query('SELECT * FROM users WHERE id = :id')
-  Future<Task?> findUserById(int id);
+  Future<Task?> findUserById(String id);
 
   @insert
   Future<int> addUser(AppUser user);
