@@ -8,12 +8,9 @@ class Todo {
 
   late String title;
 
-  late String when; // DateTime
-  late String groupId;
   late bool favorite;
-  late int sequenceOrder;
-
-  late bool privateCollection;
+  late int order;
+  late List<dynamic> owners;
 
   // style
   late String colorAccent;
@@ -22,12 +19,31 @@ class Todo {
   Todo(
     this.id,
     this.title,
-    this.when,
-    this.groupId,
     this.favorite,
-    this.sequenceOrder,
-    this.privateCollection,
+    this.order,
+    this.owners,
     this.colorAccent,
     this.deleteWhenDone,
   );
+
+  Todo.fromJson(Map<String, dynamic> json)
+      : id = json['id']! as String,
+        title = json['title']! as String,
+        favorite = json["favorite"]! as bool,
+        order = json["order"]! as int,
+        owners = json["owners"]! as List<dynamic>,
+        colorAccent = json["colorAccent"]! as String,
+        deleteWhenDone = json["deleteWhenDone"]! as bool;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "title": title,
+      "favorite": favorite,
+      "order": order,
+      "owners": owners,
+      "colorAccent": colorAccent,
+      "deleteWhenDone": deleteWhenDone,
+    };
+  }
 }

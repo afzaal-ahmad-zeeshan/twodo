@@ -2,17 +2,20 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:twodo/models/todo.dart';
 import 'package:twodo/models/user.dart';
 import 'package:twodo/pages/about_page.dart';
 import 'package:twodo/pages/login_page.dart';
 import 'package:twodo/pages/settings_page.dart';
+import 'package:twodo/services/todos_service.dart';
 import 'package:twodo/widgets/appbar_actions.dart';
 import 'package:twodo/widgets/collections_view.dart';
 import 'package:twodo/widgets/create_new_bottomsheet.dart';
-import 'package:twodo/widgets/groups_view.dart';
 import 'package:twodo/widgets/upnext_view.dart';
+import 'package:uuid/uuid.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -75,12 +78,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void handleAddBtn() {
     // show the bottom sheet
-    showModalBottomSheet(
-      context: context,
-      builder: (BuildContext context) {
-        return CreateNewBottomsheetContent();
-      },
-    );
+    // showModalBottomSheet(
+    //   context: context,
+    //   builder: (BuildContext context) {
+    //     return CreateNewBottomsheetContent();
+    //   },
+    // );
+    // addTodos();
   }
 
   @override
@@ -88,11 +92,9 @@ class _MyHomePageState extends State<MyHomePage> {
     // find child
     var child = page == ActivePage.upnext
         ? UpNextView()
-        : page == ActivePage.groups
-            ? GroupsView()
-            :
-            /* page == ActivePage.collections ? */
-            CollectionsView();
+        :
+        /* page == ActivePage.collections ? */
+        CollectionsView();
 
     FirebaseAuth.instance.userChanges().listen((User? user) {});
 
@@ -106,6 +108,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute<void>(
                   builder: (BuildContext context) => LoginPage(),
+                  // builder: (BuildContext context) => const SignInScreen(),
                 ),
               );
               setState(() {});
