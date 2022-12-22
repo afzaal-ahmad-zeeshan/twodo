@@ -6,14 +6,10 @@ import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:twodo/models/todo.dart';
-import 'package:twodo/models/user.dart';
 import 'package:twodo/pages/about_page.dart';
 import 'package:twodo/pages/login_page.dart';
 import 'package:twodo/pages/settings_page.dart';
 import 'package:twodo/services/todos_service.dart';
-import 'package:twodo/widgets/appbar_actions.dart';
-import 'package:twodo/widgets/collections_view.dart';
-import 'package:twodo/widgets/create_new_bottomsheet.dart';
 import 'package:twodo/widgets/upnext_view.dart';
 import 'package:uuid/uuid.dart';
 
@@ -65,7 +61,6 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   ActivePage page = ActivePage.upnext;
-  AppUser user = AppUser();
 
   // Navigation
   int pageIndex = 0;
@@ -90,11 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     // find child
-    var child = page == ActivePage.upnext
-        ? UpNextView()
-        :
-        /* page == ActivePage.collections ? */
-        CollectionsView();
+    // var child = page == ActivePage.upnext
+    //     ? UpNextView()
+    //     :
+    //     /* page == ActivePage.collections ? */
+    //     CollectionsView();
+    var child = UpNextView();
 
     FirebaseAuth.instance.userChanges().listen((User? user) {});
 
@@ -108,7 +104,9 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute<void>(
                   builder: (BuildContext context) => LoginPage(),
-                  // builder: (BuildContext context) => const SignInScreen(),
+                  // builder: (BuildContext context) => const SignInScreen(
+                  //   providers: [],
+                  // ),
                 ),
               );
               setState(() {});
@@ -121,7 +119,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   : Colors.purple,
             ),
           ),
-          AppbarActions(),
         ],
       ),
       // bottomNavigationBar: BottomNavigationBar(
@@ -146,28 +143,28 @@ class _MyHomePageState extends State<MyHomePage> {
       //   selectedItemColor: Colors.purple,
       //   onTap: onPageChanged,
       // ),
-      bottomNavigationBar: NavigationBar(
-        onDestinationSelected: onPageChanged,
-        selectedIndex: page.index,
-        destinations: const <Widget>[
-          NavigationDestination(
-            icon: Icon(Icons.navigate_next),
-            label: 'Up next',
-            tooltip: "Upcoming items to wrap up",
-          ),
-          NavigationDestination(
-            icon: Icon(Icons.group),
-            label: 'Groups',
-            tooltip: "My groups with my friends",
-          ),
-          NavigationDestination(
-            // selectedIcon: Icon(Icons.collections_bookmark),
-            icon: Icon(Icons.collections_bookmark),
-            label: 'Collections',
-            tooltip: "The collections that I own",
-          ),
-        ],
-      ),
+      // bottomNavigationBar: NavigationBar(
+      //   onDestinationSelected: onPageChanged,
+      //   selectedIndex: page.index,
+      //   destinations: const <Widget>[
+      //     NavigationDestination(
+      //       icon: Icon(Icons.navigate_next),
+      //       label: 'Up next',
+      //       tooltip: "Upcoming items to wrap up",
+      //     ),
+      //     NavigationDestination(
+      //       icon: Icon(Icons.group),
+      //       label: 'Groups',
+      //       tooltip: "My groups with my friends",
+      //     ),
+      //     NavigationDestination(
+      //       // selectedIcon: Icon(Icons.collections_bookmark),
+      //       icon: Icon(Icons.collections_bookmark),
+      //       label: 'Collections',
+      //       tooltip: "The collections that I own",
+      //     ),
+      //   ],
+      // ),
       body: Center(
         child: Column(
           mainAxisAlignment: page == ActivePage.upnext

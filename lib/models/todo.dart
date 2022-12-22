@@ -1,4 +1,5 @@
 import 'package:floor/floor.dart';
+import 'package:twodo/models/task.dart';
 
 // The collection of todos.
 @Entity(tableName: "todos")
@@ -12,6 +13,8 @@ class Todo {
   late int order;
   late List<dynamic> owners;
 
+  // late List<Task> tasks;
+
   // style
   late String colorAccent;
   late bool deleteWhenDone;
@@ -22,6 +25,7 @@ class Todo {
     this.favorite,
     this.order,
     this.owners,
+    // this.tasks,
     this.colorAccent,
     this.deleteWhenDone,
   );
@@ -32,6 +36,7 @@ class Todo {
         favorite = json["favorite"]! as bool,
         order = json["order"]! as int,
         owners = json["owners"]! as List<dynamic>,
+        // tasks = json["tasks"]! as List<Task>,
         colorAccent = json["colorAccent"]! as String,
         deleteWhenDone = json["deleteWhenDone"]! as bool;
 
@@ -42,6 +47,7 @@ class Todo {
       "favorite": favorite,
       "order": order,
       "owners": owners,
+      // "tasks": tasks,
       "colorAccent": colorAccent,
       "deleteWhenDone": deleteWhenDone,
     };
