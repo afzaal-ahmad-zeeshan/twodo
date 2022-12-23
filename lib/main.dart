@@ -2,16 +2,11 @@ import 'dart:io';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_ui_auth/firebase_ui_auth.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:twodo/models/todo.dart';
-import 'package:twodo/pages/about_page.dart';
 import 'package:twodo/pages/login_page.dart';
-import 'package:twodo/pages/settings_page.dart';
-import 'package:twodo/services/todos_service.dart';
+import 'package:twodo/widgets/create_todo_sheet.dart';
 import 'package:twodo/widgets/upnext_view.dart';
-import 'package:uuid/uuid.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -73,12 +68,21 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void handleAddBtn() {
     // show the bottom sheet
-    // showModalBottomSheet(
-    //   context: context,
-    //   builder: (BuildContext context) {
-    //     return CreateNewBottomsheetContent();
-    //   },
-    // );
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(25.0),
+        ),
+      ),
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        return Padding(
+          padding: MediaQuery.of(context).viewInsets,
+          child: CreateTodoSheet(),
+        );
+      },
+    );
     // addTodos();
   }
 

@@ -1,10 +1,7 @@
-import 'package:floor/floor.dart';
 import 'package:twodo/models/task.dart';
 
 // The collection of todos.
-@Entity(tableName: "todos")
 class Todo {
-  @primaryKey
   late String id;
 
   late String title;
@@ -13,7 +10,7 @@ class Todo {
   late int order;
   late List<dynamic> owners;
 
-  // late List<Task> tasks;
+  late List<Task> tasks;
 
   // style
   late String colorAccent;
@@ -25,10 +22,20 @@ class Todo {
     this.favorite,
     this.order,
     this.owners,
-    // this.tasks,
+    this.tasks,
     this.colorAccent,
     this.deleteWhenDone,
   );
+
+  Todo.empty()
+      : id = "",
+        title = "",
+        favorite = false,
+        order = 1,
+        owners = [],
+        tasks = [],
+        colorAccent = "red",
+        deleteWhenDone = true;
 
   Todo.fromJson(Map<String, dynamic> json)
       : id = json['id']! as String,
@@ -36,7 +43,9 @@ class Todo {
         favorite = json["favorite"]! as bool,
         order = json["order"]! as int,
         owners = json["owners"]! as List<dynamic>,
-        // tasks = json["tasks"]! as List<Task>,
+        tasks = (json["tasks"]! as List<dynamic>)
+            .map((e) => Task.fromJson(e))
+            .toList(),
         colorAccent = json["colorAccent"]! as String,
         deleteWhenDone = json["deleteWhenDone"]! as bool;
 
@@ -47,7 +56,7 @@ class Todo {
       "favorite": favorite,
       "order": order,
       "owners": owners,
-      // "tasks": tasks,
+      "tasks": tasks.map((e) => e.toJson()).toList(),
       "colorAccent": colorAccent,
       "deleteWhenDone": deleteWhenDone,
     };

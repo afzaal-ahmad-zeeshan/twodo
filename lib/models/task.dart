@@ -1,9 +1,5 @@
-import 'package:floor/floor.dart';
-
 // The individual todo item.
-@Entity(tableName: "tasks")
 class Task {
-  @primaryKey
   late String id;
 
   late String title;
@@ -11,10 +7,7 @@ class Task {
   late String doBefore; // DateTime
   late bool favorite;
 
-  late int sequenceOrder;
-
-  late String when; // DateTime
-  late int todoId;
+  late int order;
 
   Task(
     this.id,
@@ -22,8 +15,25 @@ class Task {
     this.done,
     this.doBefore,
     this.favorite,
-    this.sequenceOrder,
-    this.when,
-    this.todoId,
+    this.order,
   );
+
+  Task.fromJson(Map<String, dynamic> json)
+      : id = json["id"]! as String,
+        title = json["title"]! as String,
+        done = json["done"]! as bool,
+        doBefore = json["doBefore"]! as String,
+        favorite = json["favorite"]! as bool,
+        order = json["order"]! as int;
+
+  Map<String, dynamic> toJson() {
+    return {
+      "id": id,
+      "title": title,
+      "done": done,
+      "doBefore": doBefore,
+      "favorite": favorite,
+      "order": order,
+    };
+  }
 }
