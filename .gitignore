@@ -11,6 +11,10 @@
 migrate_working_dir/
 google-services.json
 
+firebase_app_id_file.json
+GoogleService-Info.plist
+firebase_options.dart
+
 # IntelliJ related
 *.iml
 *.ipr

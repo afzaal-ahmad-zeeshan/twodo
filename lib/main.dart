@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:twodo/firebase_options.dart';
 import 'package:twodo/pages/login_page.dart';
 import 'package:twodo/widgets/create_todo_sheet.dart';
 import 'package:twodo/widgets/upnext_view.dart';
@@ -12,7 +13,9 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   if (Platform.isAndroid || Platform.isIOS || Platform.isMacOS || kIsWeb) {
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
   }
 
   // Ideal time to initialize
