@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:twodo/firebase_options.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -27,7 +30,9 @@ class _LoginPageState extends State<LoginPage> {
   Future<UserCredential?> signInWithGoogle() async {
     // Trigger the authentication flow
     try {
-      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      final GoogleSignInAccount? googleUser = await GoogleSignIn(
+        clientId: DefaultFirebaseOptions.currentPlatform.iosClientId,
+      ).signIn();
       if (googleUser == null) {
         return null;
       }
