@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:twodo/firebase_options.dart';
 import 'package:twodo/pages/login_page.dart';
 import 'package:twodo/widgets/create_todo_sheet.dart';
+import 'package:twodo/widgets/todo_list.dart';
 import 'package:twodo/widgets/upnext_view.dart';
 
 Future<void> main() async {
@@ -16,6 +18,18 @@ Future<void> main() async {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
     );
+
+    FirebaseFirestore.instance.settings = const Settings(
+      persistenceEnabled: true,
+    );
+  }
+
+  if (kIsWeb) {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+
+    await FirebaseFirestore.instance.enablePersistence();
   }
 
   // Ideal time to initialize
@@ -42,12 +56,6 @@ class MyApp extends StatelessWidget {
   }
 }
 
-enum ActivePage {
-  upnext,
-  groups,
-  collections,
-}
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -58,17 +66,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  ActivePage page = ActivePage.upnext;
-
-  // Navigation
-  int pageIndex = 0;
-
-  void onPageChanged(int index) {
-    setState(() {
-      page = ActivePage.values[index];
-    });
-  }
-
   void handleAddBtn() {
     // show the bottom sheet
     showModalBottomSheet(
@@ -91,19 +88,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // find child
-    // var child = page == ActivePage.upnext
-    //     ? UpNextView()
-    //     :
-    //     /* page == ActivePage.collections ? */
-    //     CollectionsView();
     var child = UpNextView();
 
     FirebaseAuth.instance.userChanges().listen((User? user) {});
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('twodo - ${page.toString().split(".")[1]}'),
+        title: const Text('twodo'),
         actions: [
           IconButton(
             onPressed: () async {
@@ -111,9 +102,6 @@ class _MyHomePageState extends State<MyHomePage> {
                 context,
                 MaterialPageRoute<void>(
                   builder: (BuildContext context) => LoginPage(),
-                  // builder: (BuildContext context) => const SignInScreen(
-                  //   providers: [],
-                  // ),
                 ),
               );
               setState(() {});
@@ -128,58 +116,13 @@ class _MyHomePageState extends State<MyHomePage> {
           ),
         ],
       ),
-      // bottomNavigationBar: BottomNavigationBar(
-      //   items: const <BottomNavigationBarItem>[
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.navigate_next),
-      //       label: 'Up next',
-      //       tooltip: "Upcoming items to wrap up",
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.group),
-      //       label: 'Groups',
-      //       tooltip: "My groups with my friends",
-      //     ),
-      //     BottomNavigationBarItem(
-      //       icon: Icon(Icons.collections_bookmark),
-      //       label: 'Collections',
-      //       tooltip: "The collections that I own",
-      //     ),
-      //   ],
-      //   currentIndex: page.index,
-      //   selectedItemColor: Colors.purple,
-      //   onTap: onPageChanged,
-      // ),
-      // bottomNavigationBar: NavigationBar(
-      //   onDestinationSelected: onPageChanged,
-      //   selectedIndex: page.index,
-      //   destinations: const <Widget>[
-      //     NavigationDestination(
-      //       icon: Icon(Icons.navigate_next),
-      //       label: 'Up next',
-      //       tooltip: "Upcoming items to wrap up",
-      //     ),
-      //     NavigationDestination(
-      //       icon: Icon(Icons.group),
-      //       label: 'Groups',
-      //       tooltip: "My groups with my friends",
-      //     ),
-      //     NavigationDestination(
-      //       // selectedIcon: Icon(Icons.collections_bookmark),
-      //       icon: Icon(Icons.collections_bookmark),
-      //       label: 'Collections',
-      //       tooltip: "The collections that I own",
-      //     ),
-      //   ],
-      // ),
       body: Center(
         child: Column(
-          mainAxisAlignment: page == ActivePage.upnext
-              ? MainAxisAlignment.center
-              : MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.start,
           mainAxisSize: MainAxisSize.max,
           children: <Widget>[
-            child,
+            TodoList(),
+            // child,
           ],
         ),
       ),

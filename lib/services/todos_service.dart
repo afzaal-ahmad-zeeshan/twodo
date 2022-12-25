@@ -25,11 +25,11 @@ class TodosService {
     }
   }
 
-  Future<Todo?> findTodo(bool favorite) async {
+  Future<Todo?> findTodo(String todoId) async {
     Todo todo;
     try {
       var todos = FirebaseFirestore.instance.collection(collectionName);
-      var query = await todos.where("favorite", isEqualTo: favorite).get();
+      var query = await todos.where("id", isEqualTo: todoId).get();
 
       // await ref.add(todo);
       var docId = query.docs.first.id;
@@ -45,10 +45,34 @@ class TodosService {
     }
   }
 
+  // Stream<Todo?> streamTodo(String todoId) async* {
+  //   Todo todo;
+  //   try {
+  //     var todos = FirebaseFirestore.instance.collection(collectionName);
+  //     var query = todos.where("id", isEqualTo: todoId).snapshots(
+  //           includeMetadataChanges: true,
+  //         );
+
+  //     // await ref.add(todo);
+  //     var data = query.map((data) {});
+
+  //     todo = Todo.fromJson(data!);
+  //     debugPrint(data.toString());
+  //     return todo;
+  //   } catch (e) {
+  //     debugPrint("Could not find the todo");
+  //     debugPrint(e.toString());
+  //     return null;
+  //   }
+  // }
+
   Future<List<Todo>?> getTodos() async {
     try {
       var todos = FirebaseFirestore.instance.collection(collectionName);
-      var query = await todos.where("favorite", isEqualTo: true).get();
+      var query = await todos
+          .orderBy("order")
+          // .where("favorite", isEqualTo: true)
+          .get();
 
       // await ref.add(todo);
       var data = query.docs.map((item) => Todo.fromJson(item.data())).toList();
@@ -74,7 +98,7 @@ class TodosService {
         "favorite": todo.favorite,
         "order": todo.order,
         "owners": todo.owners,
-        "tasks": todo.tasks,
+        "tasks": todo.tasks.map((t) => t.toJson()).toList(),
         "colorAccent": todo.colorAccent,
         "deleteWhenDone": todo.deleteWhenDone,
       });
