@@ -1,4 +1,5 @@
 import 'package:twodo/models/task.dart';
+import 'package:uuid/uuid.dart';
 
 // The collection of todos.
 class Todo {
@@ -28,7 +29,7 @@ class Todo {
   );
 
   Todo.empty()
-      : id = "",
+      : id = const Uuid().v4(),
         title = "",
         favorite = false,
         order = 1,

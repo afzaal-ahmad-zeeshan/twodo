@@ -26,6 +26,17 @@ class _TodoPageState extends State<TodoPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(title),
+        actions: [
+          // Show the bottom sheet to update the collaborator.
+          IconButton(
+            onPressed: () {},
+            icon: const Icon(
+              Icons.group,
+            ),
+            color: Colors.purple,
+            tooltip: "The collaborator for this collection.",
+          ),
+        ],
       ),
       body: FutureBuilder(
         future: findTodo,
@@ -46,6 +57,8 @@ class _TodoPageState extends State<TodoPage> {
               });
             });
             return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 ListView.builder(
                   shrinkWrap: true,
@@ -87,6 +100,19 @@ class _TodoPageState extends State<TodoPage> {
                     );
                   },
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 8, 0),
+                      child: ElevatedButton(
+                        onPressed: () {},
+                        child: const Text("+ Add a task"),
+                      ),
+                    ),
+                  ],
+                ),
               ],
             );
           }
@@ -95,9 +121,15 @@ class _TodoPageState extends State<TodoPage> {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-        tooltip: 'Delete',
-        child: const Icon(Icons.delete),
+        onPressed: () async {
+          // Show a bottom sheet for confirmation.
+
+          // Delete the collection.
+          await TodosService().deleteTodo(widget.todoId);
+          Navigator.pop(context);
+        },
+        tooltip: 'Delete the collection',
+        child: const Icon(Icons.delete_forever),
       ),
     );
   }

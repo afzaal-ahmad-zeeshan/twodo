@@ -72,7 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
       context: context,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(
-          top: Radius.circular(25.0),
+          top: Radius.circular(8.0),
         ),
       ),
       isScrollControlled: true,

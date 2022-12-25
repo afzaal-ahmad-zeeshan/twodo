@@ -119,12 +119,12 @@ class TodosService {
       // await ref.add(todo);
       await todos.doc(query.docs.first.id).delete();
       debugPrint("Deleted the document.");
+      return true;
     } catch (e) {
       debugPrint("Could not delete the todo");
       debugPrint(e.toString());
       return false;
     }
-    return true;
   }
 
   // Tasks
