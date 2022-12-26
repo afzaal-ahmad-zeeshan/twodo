@@ -18,11 +18,13 @@ class CreateTaskSheet extends StatefulWidget {
 
 class _CreateTaskSheet extends State<CreateTaskSheet> {
   Task task = Task.empty();
-  var sampleTasks = [
+  static const List<String> sampleTasks = [
     "Buy milk and 8 eggs",
     "Pick up the parcel",
     "Fill the gas tank before our weekend trip",
   ];
+
+  var hint = sampleTasks[Random().nextInt(sampleTasks.length)];
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +43,7 @@ class _CreateTaskSheet extends State<CreateTaskSheet> {
             child: TextField(
               decoration: InputDecoration(
                 border: const OutlineInputBorder(),
-                labelText: sampleTasks[Random().nextInt(sampleTasks.length)],
+                hintText: hint,
                 suffixIcon: const Icon(Icons.text_fields),
               ),
               onChanged: (value) {

@@ -30,6 +30,8 @@ class _TodoPageState extends State<TodoPage> {
   Future<Todo?>? findTodo;
   Todo? todo;
 
+  String? _title;
+
   @override
   void initState() {
     findTodo = TodosService().findTodo(widget.todoId);
@@ -40,7 +42,58 @@ class _TodoPageState extends State<TodoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(title),
+        title: InkWell(
+          child: Text(title),
+          onTap: () {
+            // showBottomSheet for title update.
+            showModalBottomSheet(
+              context: context,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(
+                  top: Radius.circular(8.0),
+                ),
+              ),
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return Padding(
+                  padding: MediaQuery.of(context).viewInsets,
+                  child: ListTile(
+                    leading: const Icon(
+                      Icons.text_fields,
+                      color: Colors.purple,
+                    ),
+                    title: TextFormField(
+                      initialValue: title,
+                      onChanged: (value) {
+                        setState(() {
+                          _title = value;
+                        });
+                      },
+                    ),
+                    trailing: ElevatedButton(
+                      child: const Icon(
+                        Icons.done,
+                        color: Colors.purple,
+                      ),
+                      onPressed: () async {
+                        // update the title
+                        debugPrint(_title);
+                        todo!.title = _title!;
+                        await TodosService().updateTodo(todo!.id, todo!);
+
+                        setState(() {});
+                        if (!mounted) {
+                          return;
+                        }
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                );
+              },
+            );
+          },
+        ),
         actions: [
           // Show the bottom sheet to update the collaborator.
           IconButton(

@@ -105,45 +105,8 @@ class _TodoListState extends State<TodoList> {
                         setState(() {});
                       },
                     ),
-                    title: InkWell(
-                      child: Text(
-                        data[index].title,
-                      ),
-                      onLongPress: () {
-                        showModalBottomSheet(
-                          context: context,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(
-                              top: Radius.circular(8.0),
-                            ),
-                          ),
-                          isScrollControlled: true,
-                          builder: (BuildContext context) {
-                            return Padding(
-                              padding: MediaQuery.of(context).viewInsets,
-                              child: ListTile(
-                                leading: const Icon(
-                                  Icons.text_fields,
-                                  color: Colors.purple,
-                                ),
-                                title: TextFormField(
-                                  initialValue: data[index].title,
-                                  onChanged: (value) {},
-                                ),
-                                trailing: ElevatedButton(
-                                  child: const Icon(
-                                    Icons.done,
-                                    color: Colors.purple,
-                                  ),
-                                  onPressed: () {
-                                    // update the title
-                                  },
-                                ),
-                              ),
-                            );
-                          },
-                        );
-                      },
+                    title: Text(
+                      data[index].title,
                     ),
                     subtitle: Wrap(
                       // mainAxisAlignment: MainAxisAlignment.start,
@@ -194,7 +157,7 @@ class _TodoListState extends State<TodoList> {
                             ),
                           ),
                         ),
-                        const Text(" • "),
+                        const Text(" · "),
                         Text(tasksString),
                       ],
                     ),

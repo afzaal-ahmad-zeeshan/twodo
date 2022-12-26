@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:twodo/firebase_options.dart';
 import 'package:twodo/pages/login_page.dart';
 import 'package:twodo/widgets/create_todo_sheet.dart';
@@ -49,6 +50,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         useMaterial3: true,
         primarySwatch: Colors.purple,
+        textTheme: GoogleFonts.openSansTextTheme(),
       ),
       home: const MyHomePage(title: 'twodo'),
       debugShowCheckedModeBanner: false,
@@ -88,9 +90,27 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    var child = UpNextView();
+    FirebaseAuth.instance.userChanges().listen(
+      (User? user) async {
+        if (user == null) {
+          // move to the login page
+          // await Navigator.push(
+          //   context,
+          //   MaterialPageRoute<void>(
+          //     builder: (BuildContext context) => LoginPage(),
+          //   ),
+          // );
 
-    FirebaseAuth.instance.userChanges().listen((User? user) {});
+          // Navigator.of(context).pushAndRemoveUntil(
+          //   MaterialPageRoute(builder: (context) => LoginPage()),
+          //   (Route<dynamic> route) => false,
+          // );
+
+          // refresh the icon?
+          setState(() {});
+        }
+      },
+    );
 
     return Scaffold(
       appBar: AppBar(
