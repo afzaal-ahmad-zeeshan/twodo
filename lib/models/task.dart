@@ -1,4 +1,6 @@
 // The individual todo item.
+import 'package:uuid/uuid.dart';
+
 class Task {
   late String id;
 
@@ -17,6 +19,20 @@ class Task {
     this.favorite,
     this.order,
   );
+
+  Task.empty()
+      : id = const Uuid().v4(),
+        title = "",
+        done = false,
+        doBefore = DateTime.now()
+            .add(
+              const Duration(
+                days: 5,
+              ),
+            )
+            .toString(),
+        favorite = false,
+        order = 0;
 
   Task.fromJson(Map<String, dynamic> json)
       : id = json["id"]! as String,

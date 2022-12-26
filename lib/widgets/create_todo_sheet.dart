@@ -1,6 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:twodo/models/todo.dart';
+import 'package:twodo/pages/todo_page.dart';
+import 'package:twodo/services/todos_service.dart';
 
 class CreateTodoSheet extends StatefulWidget {
   @override
@@ -27,7 +29,8 @@ class _CreateTodoSheet extends State<CreateTodoSheet> {
             child: TextField(
               decoration: const InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: 'Title for the list',
+                labelText: 'Title for the list',
+                suffixIcon: Icon(Icons.text_fields),
               ),
               onChanged: (value) {
                 setState(() {
@@ -38,17 +41,25 @@ class _CreateTodoSheet extends State<CreateTodoSheet> {
           ),
           Padding(
             padding: const EdgeInsets.fromLTRB(28, 10, 28, 0),
-            child: TextField(
-              decoration: const InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'collaborator@example.com',
-              ),
-              onChanged: (value) {
-                setState(() {
-                  var me = FirebaseAuth.instance.currentUser?.email;
-                  todo.owners = [me, value];
-                });
-              },
+            child: Column(
+              children: [
+                TextField(
+                  decoration: const InputDecoration(
+                    border: OutlineInputBorder(),
+                    labelText: 'collaborator@example.com',
+                    suffixIcon: Icon(
+                      Icons.group,
+                    ),
+                    helperText: "You cannot change the collaborator later.",
+                  ),
+                  onChanged: (value) {
+                    setState(() {
+                      var me = FirebaseAuth.instance.currentUser?.email;
+                      todo.owners = [me ?? "foo@example.com", value];
+                    });
+                  },
+                ),
+              ],
             ),
           ),
           ListTile(
@@ -80,8 +91,24 @@ class _CreateTodoSheet extends State<CreateTodoSheet> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 ElevatedButton(
-                  onPressed: () {
-                    debugPrint(todo.toString());
+                  onPressed: () async {
+                    // Create the todo
+                    debugPrint(todo.toJson().toString());
+                    await TodosService().addTodo(todo);
+
+                    // close the sheet.
+                    if (!mounted) {
+                      return;
+                    }
+                    Navigator.pop(context);
+
+                    // open the todo page
+                    await Navigator.push(
+                      context,
+                      MaterialPageRoute<void>(
+                        builder: (BuildContext context) => TodoPage(todo.id),
+                      ),
+                    );
                   },
                   child: const Text("Create"),
                 ),

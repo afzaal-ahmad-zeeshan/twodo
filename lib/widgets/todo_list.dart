@@ -10,25 +10,25 @@ class TodoList extends StatefulWidget {
   State<StatefulWidget> createState() => _TodoListState();
 }
 
+const List<String> _temporaryEmails = ["foo", "foo@example.com"];
+String getPartnerName(List<String> owners) {
+  String _partner = owners[0];
+  if (_partner == FirebaseAuth.instance.currentUser?.email) {
+    _partner = owners[1];
+  } else if (_temporaryEmails.contains(_partner)) {
+    _partner = owners[1];
+  }
+
+  return _partner;
+}
+
 class _TodoListState extends State<TodoList> {
-  static const String _temporaryEmail = "foo";
   Future<List<Todo>?>? getTodos;
 
   @override
   void initState() {
     getTodos = TodosService().getTodos();
     super.initState();
-  }
-
-  String getPartnerName(List<String> owners) {
-    String _partner = owners[0];
-    if (_partner == FirebaseAuth.instance.currentUser?.email) {
-      _partner = owners[1];
-    } else if (_partner == _temporaryEmail) {
-      _partner = owners[1];
-    }
-
-    return _partner;
   }
 
   @override
@@ -61,58 +61,175 @@ class _TodoListState extends State<TodoList> {
                 if (tasksDone == data[index].tasks.length) {
                   tasksString = "All caught up! 🎉";
                 }
-                return ListTile(
-                  leading: IconButton(
-                    tooltip: "Delete when the tasks are marked as done.",
-                    icon: Icon(
-                      Icons.auto_delete,
-                      color: data[index].deleteWhenDone
-                          ? Colors.purple
-                          : Colors.grey,
+                if (data[index].tasks.isEmpty) {
+                  tasksString = "No tasks created yet.";
+                }
+                return Dismissible(
+                  key: Key(data[index].id),
+                  background: Container(
+                    color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      mainAxisSize: MainAxisSize.max,
+                      children: const [
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.delete_forever,
+                            color: Colors.white,
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Icon(
+                            Icons.delete_forever,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      var todo = data[index];
-                      todo.deleteWhenDone = !data[index].deleteWhenDone;
-                      TodosService().updateTodo(data[index].id, todo);
-                      setState(() {});
-                    },
                   ),
-                  title: Text(
-                    data[index].title,
-                  ),
-                  subtitle: Text(
-                    "${getPartnerName(
-                      data[index]
-                          .owners
-                          .map((owner) => owner as String)
-                          .toList(),
-                    )} • $tasksString",
-                  ),
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.star,
-                      color: data[index].favorite ? Colors.orange : Colors.grey,
-                    ),
-                    onPressed: () {
-                      // update the todo
-                      var todo = data[index];
-                      todo.favorite = !data[index].favorite;
-                      TodosService().updateTodo(data[index].id, todo);
-                      setState(() {});
-                    },
-                  ),
-                  onTap: () async {
-                    await Navigator.push(
-                      context,
-                      MaterialPageRoute<void>(
-                        builder: (BuildContext context) =>
-                            TodoPage(data[index].id),
+                  child: ListTile(
+                    leading: IconButton(
+                      tooltip: "Delete when the tasks are marked as done.",
+                      icon: Icon(
+                        Icons.auto_delete,
+                        color: data[index].deleteWhenDone
+                            ? Colors.purple
+                            : Colors.grey,
                       ),
-                    );
-                    setState(() {
-                      getTodos = TodosService().getTodos();
-                    });
-                    debugPrint("${data[index].id} was pressed");
+                      onPressed: () {
+                        var todo = data[index];
+                        todo.deleteWhenDone = !data[index].deleteWhenDone;
+                        TodosService().updateTodo(data[index].id, todo);
+                        setState(() {});
+                      },
+                    ),
+                    title: InkWell(
+                      child: Text(
+                        data[index].title,
+                      ),
+                      onLongPress: () {
+                        showModalBottomSheet(
+                          context: context,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(8.0),
+                            ),
+                          ),
+                          isScrollControlled: true,
+                          builder: (BuildContext context) {
+                            return Padding(
+                              padding: MediaQuery.of(context).viewInsets,
+                              child: ListTile(
+                                leading: const Icon(
+                                  Icons.text_fields,
+                                  color: Colors.purple,
+                                ),
+                                title: TextFormField(
+                                  initialValue: data[index].title,
+                                  onChanged: (value) {},
+                                ),
+                                trailing: ElevatedButton(
+                                  child: const Icon(
+                                    Icons.done,
+                                    color: Colors.purple,
+                                  ),
+                                  onPressed: () {
+                                    // update the title
+                                  },
+                                ),
+                              ),
+                            );
+                          },
+                        );
+                      },
+                    ),
+                    subtitle: Wrap(
+                      // mainAxisAlignment: MainAxisAlignment.start,
+                      // mainAxisSize: MainAxisSize.min,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            showModalBottomSheet(
+                              context: context,
+                              shape: const RoundedRectangleBorder(
+                                borderRadius: BorderRadius.vertical(
+                                  top: Radius.circular(8.0),
+                                ),
+                              ),
+                              isScrollControlled: true,
+                              builder: (BuildContext context) {
+                                return Padding(
+                                  padding: MediaQuery.of(context).viewInsets,
+                                  child: ListTile(
+                                    leading: const Icon(
+                                      Icons.group,
+                                      color: Colors.purple,
+                                    ),
+                                    title: Text(
+                                      getPartnerName(
+                                        data[index]
+                                            .owners
+                                            .map((e) => e as String)
+                                            .toList(),
+                                      ),
+                                    ),
+                                    // add trailing for the collections with this collaborator.
+                                  ),
+                                );
+                              },
+                            );
+                          },
+                          child: Text(
+                            getPartnerName(
+                              data[index]
+                                  .owners
+                                  .map((owner) => owner as String)
+                                  .toList(),
+                            ),
+                            style: TextStyle(
+                              color: Colors.grey[800],
+                              decorationStyle: TextDecorationStyle.dashed,
+                            ),
+                          ),
+                        ),
+                        const Text(" • "),
+                        Text(tasksString),
+                      ],
+                    ),
+                    isThreeLine: true,
+                    // tileColor: Colors[data[index].colorAccent],
+                    trailing: IconButton(
+                      icon: Icon(
+                        Icons.star,
+                        color:
+                            data[index].favorite ? Colors.orange : Colors.grey,
+                      ),
+                      onPressed: () {
+                        // update the todo
+                        var todo = data[index];
+                        todo.favorite = !data[index].favorite;
+                        TodosService().updateTodo(data[index].id, todo);
+                        setState(() {});
+                      },
+                    ),
+                    onTap: () async {
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute<void>(
+                          builder: (BuildContext context) =>
+                              TodoPage(data[index].id),
+                        ),
+                      );
+                      setState(() {
+                        getTodos = TodosService().getTodos();
+                      });
+                      debugPrint("${data[index].id} was pressed");
+                    },
+                  ),
+                  onDismissed: (direction) {
+                    // delete the todo
                   },
                 );
               },
